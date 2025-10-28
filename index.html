@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>TalentConnect – University Network</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --uni-blue: #002855;
+      --uni-blue-dark: #001a36;
+      --uni-gold: #ffcc00;
+      --bg: #f9fafc;
+      --card: #ffffff;
+      --ink: #1f2430;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --ok: #0f5132;
+      --okbg:#eaf7ee;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", Arial; color: var(--ink); background: var(--bg); }
+    header { position: sticky; top: 0; z-index: 50; background: var(--uni-blue); color: #fff; border-bottom: 4px solid var(--uni-gold); }
+    .head-inner { max-width: 1200px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand img.logo { height: 50px; width: auto; object-fit: contain; display: block; }
+    .brand-name { font-weight: 800; font-size: 1.5rem; letter-spacing: .5px; }
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tab-btn { background: transparent; border: 2px solid var(--uni-gold); color: var(--uni-gold); font-weight: 600; border-radius: 8px; padding: 6px 12px; cursor: pointer; transition: .2s; }
+    .tab-btn:hover, .tab-btn.active { background: var(--uni-gold); color: var(--uni-blue); }
+    .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+    .grid { display: grid; gap: 20px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+    .section-title { color: var(--uni-blue); font-weight: 800; margin-bottom: 10px; }
+    .muted { color: var(--muted); font-size: 14px; margin-bottom: 12px; }
+    label { display:block; font-weight:600; font-size:14px; margin-bottom:6px; }
+    input, select, textarea { width:100%; border:1px solid var(--line); border-radius:8px; padding:10px; font-size:14px; margin-bottom:10px; background:#fff; }
+    textarea { min-height: 100px; }
+    .btn { display:inline-block; border:2px solid transparent; padding:10px 16px; font-weight:700; border-radius:8px; cursor:pointer; transition:.2s; }
+    .btn.primary { background: var(--uni-blue); color:#fff; border-color: var(--uni-blue); }
+    .btn.primary:hover { background: var(--uni-blue-dark); }
+    .btn.alt { background: var(--uni-gold); color: var(--uni-blue); border-color: var(--uni-gold); }
+    .pill { display:inline-block; background:#f2f4f7; border:1px solid var(--line); padding:6px 10px; border-radius:999px; font-size:12px; }
+    .badge { font-size:12px; border-radius:999px; padding:4px 10px; border:1px solid var(--line); background:#fff; }
+    .ok { background: var(--okbg); color: var(--ok); border-color:#c6e6d2; }
+    .cover { height:140px; border-radius:14px 14px 0 0; background: linear-gradient(135deg, var(--uni-blue), #305d91); }
+    .profile-card { padding:0; overflow:hidden; }
+    .prof-inner { padding:20px; }
+    .avatar { width:90px; height:90px; border-radius:50%; background:#fff; border:3px solid var(--uni-gold); display:grid; place-items:center; font-weight:800; color:var(--uni-blue); font-size:28px; margin-top:-45px; box-shadow:0 2px 4px rgba(0,0,0,.1); }
+    .name { font-size:22px; font-weight:800; margin-top:10px; }
+    .title { color: var(--muted); font-size:14px; }
+    ul { margin:6px 0 0 16px; }
+    .row { display:flex; gap:10px; flex-wrap:wrap; }
+    .job-header { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .job-title { font-size:18px; font-weight:800; }
+    .meta { color: var(--muted); font-size:13px; }
+    .job-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .footer { text-align:center; color:var(--muted); font-size:12px; margin: 40px 0 20px; }
+    .search { padding:10px 12px; border-radius:10px; border:1px solid var(--line); width:100%; }
+    .directory-card { display:flex; gap:12px; align-items:flex-start; }
+    .mini-avatar { min-width:44px; height:44px; border-radius:50%; display:grid; place-items:center; background:#fff; border:2px solid var(--uni-blue); color:var(--uni-blue); font-weight:800; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="head-inner">
+      <div class="brand">
+        <img class="logo" src="logo.png" alt="TalentConnect logo">
+        <div class="brand-name">TalentConnect</div>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-home">Home</button>
+        <button class="tab-btn" id="tab-directory">Directory</button>
+        <button class="tab-btn" id="tab-employers">Employers</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- ======================== CANDIDATE BUILDER ======================== -->
+    <section id="home">
+      <div class="grid grid-2">
+        <div class="card">
+          <h3 class="section-title">Create / Edit Your Profile</h3>
+          <p class="muted">Your profile updates live — just like LinkedIn.</p>
+
+          <label>Full Name</label>
+          <input id="fullName" placeholder="Aditi Sharma">
+          <label>Username / URL Slug</label>
+          <input id="slug" placeholder="aditi-sharma">
+          <label>Headline / Title</label>
+          <input id="headline" placeholder="Backend Engineer · Node.js · AWS">
+          <label>Status</label>
+          <select id="status">
+            <option>Student</option><option>Recent Graduate</option><option>Freelancer</option>
+            <option>Mid-Level</option><option>Senior</option>
+          </select>
+          <label>Expected Salary Range</label>
+          <input id="salary" placeholder="e.g. 16/hr, 50k - 70k">
+          <label>Short Bio</label>
+          <textarea id="bio" placeholder="Who you are, what you love building, goals..."></textarea>
+          <label>Top 3 Projects (Title - link per line)</label>
+          <textarea id="projects" placeholder="Project Title - https://link"></textarea>
+          <label>Experience (one per line)</label>
+          <textarea id="experience" placeholder="Company - Title - Duration - Work Summary"></textarea>
+          <label><input type="checkbox" id="freelancer"> Freelancer</label>
+          <button class="btn primary" id="save">Save</button>
+        </div>
+
+        <div class="card profile-card">
+          <div class="cover"></div>
+          <div class="prof-inner">
+            <div class="avatar" id="avatar">TS</div>
+            <div class="name" id="pName">Talent Student</div>
+            <div class="title" id="pHeadline">Your headline appears here</div>
+            <div class="row" style="margin:8px 0">
+              <span class="badge" id="pStatus">Recent Graduate</span>
+              <span class="badge ok" id="pFreel" style="display:none">Freelancer</span>
+            </div>
+            <div><strong>Bio:</strong> <span id="pBio">Tell employers about yourself...</span></div>
+            <div><strong>Comp:</strong> <span id="pSalary">50k - 70k</span></div>
+            <div><strong>Experience:</strong><ul id="pExp"></ul></div>
+            <div><strong>Projects:</strong><ul id="pProj"></ul></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== DIRECTORY (simple) ======================== -->
+    <section id="directory" style="display:none">
+      <div class="card">
+        <h3 class="section-title">People Directory</h3>
+        <p class="muted">Search and open profiles saved locally on this browser.</p>
+        <input class="search" id="q" placeholder="Search by name, role, company…">
+      </div>
+      <div id="dirList" class="grid grid-3"></div>
+    </section>
+
+    <!-- ======================== EMPLOYERS ======================== -->
+    <section id="employers" style="display:none">
+      <div class="grid grid-2">
+        <!-- Employer Profile: Jacob Lewis -->
+        <div class="card profile-card">
+          <div class="cover"></div>
+          <div class="prof-inner">
+            <div class="avatar">JL</div>
+            <div class="name">Jacob Lewis</div>
+            <div class="title">GVSU Staff · Employer Partner</div>
+            <div class="row" style="margin:8px 0">
+              <span class="pill">Grand Valley State University</span>
+              <span class="pill">Grand Rapids, MI</span>
+            </div>
+            <p class="muted" style="margin-top:6px">
+              University staff member coordinating campus hiring partners and fast-fill
+              technical opportunities for students and alumni.
+            </p>
+            <div class="row" style="margin-top:10px">
+              <a class="btn alt" href="#post-job">Post a Job</a>
+              <a class="btn primary" href="#open-roles">View Open Roles</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Post a Job (employer form) -->
+        <div class="card" id="post-job">
+          <h3 class="section-title">Post a Job</h3>
+          <p class="muted">Create a new role (saved to your browser for demo).</p>
+
+          <label>Job Title</label>
+          <input id="jobTitle" value="Windows 11 Upgrade – Configuration & Deployment Technicians">
+
+          <label>Company</label>
+          <input id="jobCompany" value="TEKsystems (for client)">
+
+          <label>Location</label>
+          <input id="jobLocation" value="Downtown Grand Rapids, MI">
+
+          <div class="grid grid-2">
+            <div>
+              <label>Pay</label>
+              <input id="jobPay" value="$16/hr">
+            </div>
+            <div>
+              <label>Contract Ends</label>
+              <input id="jobEnd" value="End of November">
+            </div>
+          </div>
+
+          <label>Shifts</label>
+          <input id="jobShifts" value="Mon–Fri 8:00am–5:00pm; 12:00pm–8:30pm">
+
+          <label>Description</label>
+          <textarea id="jobDesc">Multiple technicians needed onsite in downtown Grand Rapids for a Windows 11 Upgrade project. Responsibilities include configuration and deployment of Windows 11 across user devices, imaging, validation, and clean handoffs. Two shifts available: Mon–Fri 8:00am–5:00pm and 12:00pm–8:30pm. Pay: $16/hour. Duration: through the end of November.</textarea>
+
+          <label>Apply / Contact Email</label>
+          <input id="jobEmail" value="jacob@gvsu.edu">
+
+          <button class="btn primary" id="addJob">Add Job</button>
+        </div>
+      </div>
+
+      <!-- Open Roles (preloaded with Jacob’s posting) -->
+      <div class="card" id="open-roles" style="margin-top:20px">
+        <div class="job-header">
+          <h3 class="section-title" style="margin:0">Open Roles</h3>
+          <span class="meta" id="jobCount">0 jobs</span>
+        </div>
+        <div id="jobs"></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="footer">© 2025 TalentConnect · University Network</div>
+
+  <script>
+    // ---------- Simple storage ----------
+    const KEY = "tc_profiles_v1";
+    const JKEY = "tc_jobs_v1";
+    const store = {
+      all: () => JSON.parse(localStorage.getItem(KEY) || "[]"),
+      save: (l) => localStorage.setItem(KEY, JSON.stringify(l)),
+      upsert: (p) => { const l = store.all().filter(x => x.slug !== p.slug); l.push(p); store.save(l); return p; },
+    };
+    const jobs = {
+      all: () => JSON.parse(localStorage.getItem(JKEY) || "[]"),
+      save: (l) => localStorage.setItem(JKEY, JSON.stringify(l)),
+      add: (j) => { const l = jobs.all(); l.unshift(j); jobs.save(l); return j; }
+    };
+
+    // Seed Jacob's job if none exists
+    if (jobs.all().length === 0) {
+      jobs.save([{
+        id: String(Date.now()),
+        title: "Windows 11 Upgrade – Configuration & Deployment Technicians",
+        company: "TEKsystems (for client)",
+        location: "Downtown Grand Rapids, MI",
+        pay: "$16/hr",
+        end: "End of November",
+        shifts: "Shift A: Mon–Fri, 8:00am–5:00pm · Shift B: 12:00pm–8:30pm",
+        description:
+          "Multiple technicians needed onsite for a Windows 11 upgrade project. Duties include configuration and deployment of Windows 11 across user devices with careful adherence to imaging and handoff procedures. Two shifts available; pay is $16/hour; project runs through the end of November.",
+        contactName: "Jacob Lewis",
+        contactEmail: "jacob@gvsu.edu",
+        postedBy: "Jacob Lewis · GVSU Staff",
+        postedAt: new Date().toISOString()
+      }]);
+    }
+
+    // ---------- Tabs ----------
+    const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
+    const home = $("#home"), directory = $("#directory"), employers = $("#employers");
+    const show = (n) => {
+      $("#tab-home").classList.toggle("active", n==="home");
+      $("#tab-directory").classList.toggle("active", n==="directory");
+      $("#tab-employers").classList.toggle("active", n==="employers");
+      home.style.display = n==="home" ? "block" : "none";
+      directory.style.display = n==="directory" ? "block" : "none";
+      employers.style.display = n==="employers" ? "block" : "none";
+      window.scrollTo(0,0);
+    };
+    $("#tab-home").onclick = () => show("home");
+    $("#tab-directory").onclick = () => { renderDirectory(); show("directory"); };
+    $("#tab-employers").onclick = () => { renderJobs(); show("employers"); };
+
+    // ---------- Candidate live preview ----------
+    const update = () => {
+      $("#avatar").textContent = ($("#fullName").value || "TS")
+        .split(" ").map(w => w[0] || "").slice(0,2).join("").toUpperCase();
+      $("#pName").textContent = $("#fullName").value || "Talent Student";
+      $("#pHeadline").textContent = $("#headline").value || "Your headline appears here";
+      $("#pStatus").textContent = $("#status").value || "Recent Graduate";
+      $("#pFreel").style.display = $("#freelancer").checked ? "inline-block" : "none";
+      $("#pBio").textContent = $("#bio").value || "Tell employers about yourself...";
+      $("#pSalary").textContent = $("#salary").value || "50k - 70k";
+      $("#pExp").innerHTML = ($("#experience").value || "").split("\n").filter(Boolean).map(e => `<li>${e}</li>`).join("") || "<li>—</li>";
+      $("#pProj").innerHTML = ($("#projects").value || "").split("\n").filter(Boolean).map(e => `<li>${e}</li>`).join("") || "<li>—</li>";
+    };
+    document.querySelectorAll("input,textarea,select").forEach(el => el.addEventListener("input", update));
+    update();
+
+    // Save candidate (local only)
+    $("#save").onclick = () => {
+      const name = $("#fullName").value.trim();
+      const slug = ($("#slug").value || name).toLowerCase().replace(/[^a-z0-9-]+/g,"-").replace(/^-+|-+$/g,"");
+      if (!slug) { alert("Please enter a name or slug"); return; }
+      store.upsert({
+        slug, name,
+        headline: $("#headline").value,
+        status: $("#status").value,
+        comp: $("#salary").value,
+        bio: $("#bio").value,
+        projects: ($("#projects").value || "").split("\n").filter(Boolean),
+        experience: ($("#experience").value || "").split("\n").filter(Boolean),
+        freelancer: $("#freelancer").checked
+      });
+      alert("Profile saved to this browser.");
+      renderDirectory();
+    };
+
+    // ---------- Directory ----------
+    function renderDirectory() {
+      const list = store.all();
+      const q = ($("#q")?.value || "").toLowerCase();
+      const filtered = list.filter(p => [p.name, p.headline, p.bio].join(" ").toLowerCase().includes(q));
+      const el = $("#dirList");
+      el.innerHTML = "";
+      if (filtered.length === 0) {
+        el.innerHTML = '<div class="card muted">No profiles saved yet.</div>'; return;
+      }
+      filtered.forEach(p => {
+        const card = document.createElement("div"); card.className = "card directory-card";
+        card.innerHTML = `
+          <div class="mini-avatar">${(p.name||"?").split(/\s+/).slice(0,2).map(s=>s[0]).join("").toUpperCase()}</div>
+          <div>
+            <div style="font-weight:800">${p.name || "Unnamed"}</div>
+            <div class="muted">${p.headline || ""}</div>
+            <div class="row" style="margin:6px 0">
+              ${p.freelancer ? '<span class="badge ok">Freelancer</span>' : ''}
+            </div>
+          </div>`;
+        el.appendChild(card);
+      });
+    }
+    $("#q")?.addEventListener("input", renderDirectory);
+
+    // ---------- Jobs (Employer side) ----------
+    function jobCard(j) {
+      const mail = encodeURIComponent(`Hello,
+
+I am interested in the "${j.title}" role (${j.pay}) located in ${j.location}.
+Please find my resume attached.
+
+Thanks,
+`);
+      return `
+      <div class="card" style="margin-top:14px">
+        <div class="job-header">
+          <div>
+            <div class="job-title">${j.title}</div>
+            <div class="meta">${j.company} • ${j.location}</div>
+          </div>
+          <div class="job-actions">
+            <a class="btn alt" href="mailto:${j.contactEmail}?subject=${encodeURIComponent(j.title)}&body=${mail}">Email</a>
+            <a class="btn primary" href="mailto:${j.contactEmail}?subject=Application:%20${encodeURIComponent(j.title)}">Apply</a>
+          </div>
+        </div>
+        <div class="row" style="margin:10px 0">
+          <span class="pill">${j.pay}</span>
+          <span class="pill">Ends: ${j.end}</span>
+          <span class="pill">Posted by ${j.postedBy}</span>
+        </div>
+        <div class="muted"><strong>Shifts:</strong> ${j.shifts}</div>
+        <p style="margin-top:8px">${j.description}</p>
+        <div class="meta" style="margin-top:8px">Contact: ${j.contactName} &lt;${j.contactEmail}&gt;</div>
+      </div>`;
+    }
+    function renderJobs() {
+      const list = jobs.all();
+      $("#jobCount").textContent = `${list.length} job${list.length===1?'':'s'}`;
+      $("#jobs").innerHTML = list.map(jobCard).join("");
+    }
+    renderJobs();
+
+    // Add job
+    $("#addJob").onclick = () => {
+      const j = {
+        id: String(Date.now()),
+        title: $("#jobTitle").value || "Untitled Role",
+        company: $("#jobCompany").value || "Company",
+        location: $("#jobLocation").value || "Location",
+        pay: $("#jobPay").value || "",
+        end: $("#jobEnd").value || "",
+        shifts: $("#jobShifts").value || "",
+        description: $("#jobDesc").value || "",
+        contactName: "Jacob Lewis",
+        contactEmail: $("#jobEmail").value || "jacob@gvsu.edu",
+        postedBy: "Jacob Lewis · GVSU Staff",
+        postedAt: new Date().toISOString()
+      };
+      jobs.add(j);
+      alert("Job added (saved to this browser).");
+      renderJobs();
+      show("employers");
+    };
+
+    // Default tab
+    show("employers");
+  </script>
+</body>
+</html>
